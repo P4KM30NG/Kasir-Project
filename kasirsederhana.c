@@ -256,7 +256,7 @@ void print_struk(int ukuranArray_kranjang, int ukuranArray_list)
 {
     int totalHarga = 0;
     int i = 0;
-    printf("======== STRUK PEMBELIAN ========\n");
+    printf("================================= STRUK PEMBELIAN ================================\n");
     list_kranjang(ukuranArray_kranjang, ukuranArray_list);
     while (i < ukuranArray_kranjang)
     {
@@ -384,6 +384,20 @@ int main()
                 }
             }
             case 7:
+            {
+                char pilihanList_Struk;
+                int arrayLen_barang = sizeof(idBarang) / sizeof(idBarang[0]);
+                print_struk(jumlahKeranjang, arrayLen_barang);
+                printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList_Struk);
+                pilihanList_Struk = tolower(pilihanList_Struk);
+                if (pilihanList_Struk == 'n') {
+                    printf("Error!\n");
+                    continue;
+                } else {
+                    printf("\n");
+                    continue;
+                }
+            }
             default:
                 printf("Salah pilih menu!\n");
                 continue;
