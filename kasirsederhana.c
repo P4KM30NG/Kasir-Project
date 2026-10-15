@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <stdlib.h>
+
 
 char idBarang[10][7] =
 {
@@ -136,7 +138,7 @@ void hapusIsi_kranjang(int ukuranArray_kranjang, int ukuranArray_list) //FUNGSI 
     printf("\n");
     list_kranjang(ukuranArray_kranjang, ukuranArray_list);
     printf("Masukkan ID Barang yang mau dihapus: ");
-    scanf("%6s", idBarang_Hapus);
+    scanf("%s", idBarang_Hapus);
 
     while (i < jumlahKeranjang)
     {
@@ -164,13 +166,90 @@ void hapusIsi_kranjang(int ukuranArray_kranjang, int ukuranArray_list) //FUNGSI 
 
 void edit_kranjang(int ukuranArray_kranjang, int ukuranArray_list)
 {
-    (void)ukuranArray_kranjang;
-    (void)ukuranArray_list;
+    int i = 0;
+    int jumlahBaru;
+    char statement;
+    char idBarang_input[7];
+    list_kranjang(ukuranArray_kranjang, ukuranArray_list);
+    printf("\n");
+    printf("Masukkan ID Barang yang mau Diubah: "); scanf("%6s", idBarang_input);
+    while (i < jumlahKeranjang) {
+        if (strcmp(keranjang[i], idBarang_input) == 0)
+        {
+            printf("Masukkan Jumlah yang baru: "); scanf("%d", &jumlahBaru);
+                if (jumlahBaru != 0)
+                {
+                    jumlahItem_keranjang[i] = jumlahBaru;
+                } else 
+                {
+                    int j = i;
+                    while (j < jumlahKeranjang - 1)
+                    {
+                        strcpy(keranjang[j], keranjang[j + 1]);
+                        jumlahItem_keranjang[j] = jumlahItem_keranjang[j + 1];
+                        j++;
+                    }
+                    jumlahKeranjang--;
+                    keranjang[jumlahKeranjang][0] = '\0';
+                    jumlahItem_keranjang[jumlahKeranjang] = 0;
+
+                    list_kranjang(jumlahKeranjang, ukuranArray_list);
+                    return;
+                }
+            printf("Mau mengubah barang lainnya?: "); scanf(" %c", &statement);
+            statement = tolower(statement);
+                if (statement == 'n')
+                {
+                    break;
+                }
+        } else {
+            printf("ID Barang %s tidak ditemukan dalam keranjang!", idBarang_input);
+        }
+        i++;
+    }
 }
 
 void checkout(int ukuranArray_kranjang, int ukuranArray_list)
 {
+    int totalHarga = 0;
+    int uangDibayar = 0;
+    int nominal;
+    int i = 0;
+    
     list_kranjang(ukuranArray_kranjang, ukuranArray_list);
+    printf("\n");
+    while (i < ukuranArray_kranjang)
+    {
+        int j = 0;
+        while (j < ukuranArray_list)
+        {
+            if (strcmp(keranjang[i], idBarang[j]) == 0)
+            {
+                totalHarga += jumlahItem_keranjang[i] * hargaBarang[j];
+            } 
+            j++;
+        }
+    
+        i++;
+    }
+    printf("Total Belanja anda adalah Rp.%d\nSilahkan masukkan nominal yang sesuai dengan layar: Rp.", totalHarga);
+    while (1)
+    {
+        scanf("%d", &nominal);
+        uangDibayar += nominal;
+        int selisihUang = totalHarga - uangDibayar;
+          if (selisihUang > 0)
+            {
+                printf("Uang masih kurang %d, silahkan masukkan nominal yang kurang: Rp.", selisihUang);
+                
+            } else if (selisihUang <= 0)
+            {
+                printf("Kembali Rp.%d\n", abs(selisihUang));
+                break;
+            } 
+
+    } printf("Pembayaran Diterima\n");
+  
 }
 
 int main()
@@ -194,8 +273,8 @@ int main()
                 printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList);
                 pilihanList = tolower(pilihanList);
                 if (pilihanList == 'n') {
-                    printf("Terimakasih telah Berbelanja bersama kami!\n");
-                    break;
+                    printf("Error!\n");
+                    continue;
                 } else {
                     printf("\n");
                     continue;
@@ -228,8 +307,8 @@ int main()
                 printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList_kranjang);
                 pilihanList_kranjang = tolower(pilihanList_kranjang);
                 if (pilihanList_kranjang == 'n') {
-                    printf("Terimakasih telah Berbelanja bersama kami!\n");
-                    break;
+                    printf("Error!\n");
+                    continue;
                 } else {
                     printf("\n");
                     continue;
@@ -243,8 +322,8 @@ int main()
                 printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList_kranjang);
                 pilihanList_kranjang = tolower(pilihanList_kranjang);
                 if (pilihanList_kranjang == 'n') {
-                    printf("Terimakasih telah Berbelanja bersama kami!\n");
-                    break;
+                    printf("Error!\n");
+                    continue;
                 } else {
                     printf("\n");
                     continue;
@@ -258,15 +337,28 @@ int main()
                 printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList_kranjang);
                 pilihanList_kranjang = tolower(pilihanList_kranjang);
                 if (pilihanList_kranjang == 'n') {
-                    printf("Terimakasih telah Berbelanja bersama kami!\n");
-                    break;
+                    printf("Error!\n");
+                    continue;
                 } else {
                     printf("\n");
                     continue;
                 }
             }
 
-            case 6:
+            case 6: {
+            char pilihanList_Checkout;
+            int arrayLen_barang = sizeof(idBarang) / sizeof(idBarang[0]);
+            checkout(jumlahKeranjang, arrayLen_barang);
+            printf("\nKembali ke menu? (Y): "); scanf(" %c", &pilihanList_Checkout);
+                pilihanList_Checkout = tolower(pilihanList_Checkout);
+                if (pilihanList_Checkout == 'n') {
+                    printf("Error!\n");
+                    continue;
+                } else {
+                    printf("\n");
+                    continue;
+                }
+            }
             case 7:
             default:
                 printf("Salah pilih menu!\n");
