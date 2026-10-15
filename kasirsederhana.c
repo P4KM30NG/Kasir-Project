@@ -252,6 +252,30 @@ void checkout(int ukuranArray_kranjang, int ukuranArray_list)
   
 }
 
+void print_struk(int ukuranArray_kranjang, int ukuranArray_list)
+{
+    int totalHarga = 0;
+    int i = 0;
+    printf("======== STRUK PEMBELIAN ========\n");
+    list_kranjang(ukuranArray_kranjang, ukuranArray_list);
+    while (i < ukuranArray_kranjang)
+    {
+        int j = 0;
+        while (j < ukuranArray_list)
+        {
+            if (strcmp(keranjang[i], idBarang[j]) == 0)
+            {
+                totalHarga += jumlahItem_keranjang[i] * hargaBarang[j];
+            } 
+            j++;
+        }
+    
+        i++;
+    }
+    printf("Total Belanja: Rp.%d\n", totalHarga);
+    printf("Terimakasih telah berbelanja bersama kami!\n");
+}
+
 int main()
 {
     int pilihanMenu = -1;
